@@ -56,19 +56,53 @@
                                             <span><i class=" fa-envelope-open ic-w mx-1"></i>@item.FolderName</span>
                                         </a>
                                         <ul class="nested">
-                                            @if (Session["folderName"] != null&& Session["folderName"].ToString().Contains((string)item.id.ToString()))
+                                            @if (Session["folderName"] != null && Session["folderName"].ToString() == item.FolderName.ToString())
                                             {
                                                 foreach (var file in @ViewBag.Files)
                                                 {
-                                                    <li>@file.FileName</li>
+                                                    <li class="treeview-colorful-items">
+                                                        <a class="treeview-colorful-items-header">
+                                                            <i class="fas fa-plus-circle"></i>
+                                                            <span><i class=" fa-envelope-open ic-w mx-1">@file.FileName</i></span>
+                                                        </a>
+                                                        <ul class="nested">
+                                                            <li>
+                                                                <span><i class=" fa-envelope-open ic-w mx-1"></i>@file.FileName</span>
+                                                                <div class="input-group mb-3">
+                                                                    @using (Html.BeginForm("Dowload", "Home", FormMethod.Post))
+                                                                    {
+                                                                        <span class="label danger" id="basic-addon1">Security Question</span>
+
+                                                                        <span class="label danger" id="basic-addon1">Question</span>
+                                                                        <div class="input-group-prepend">
+                                                                            <input id="questionu" readonly value="@item.Question" name="question" type="text" class="form-control" placeholder="Question" aria-label="Question" aria-describedby="basic-addon1">
+                                                                        </div>
+                                                                        <span class="label danger" id="basic-addon1">Answer</span>
+                                                                        <div class="input-group-prepend">
+                                                                            <input id="answeru" name="answer" type="text" class="form-control" placeholder="Answer" aria-label="Answer" aria-describedby="basic-addon1">
+                                                                        </div>
+                                                                        <div class="input-group-prepend" hidden>
+                                                                            <input id="folderNameu" name="folderName" readonly value="@item.FolderName" type="text" class="form-control" placeholder="Folder name" aria-label="Folder name" aria-describedby="basic-addon1">
+                                                                        </div>
+                                                                        <span class="label danger" id="basic-addon1"> </span>
+                                                                        <button type="submit" class="btn btn-blue text-center">Unlock</button>
+                                                                    }
+                                                                </div>
+                                                            </li>
+
+                                                        </ul>
+                                                    </li>
+
+
                                                 }
-                                                <li><a href="~/Home/UploadFile">add file</a></li>
+                                                <li>@Html.ActionLink("Add file", "", "File")</li>
                                             }
                                             else
                                             {
                                                 <li>
                                                     <div class="input-group mb-3">
-                                                        <form action="Home/Unlock" method="post">
+                                                        @using (Html.BeginForm("Unlock", "Home", FormMethod.Post))
+                                                        {
                                                             <span class="label danger" id="basic-addon1">Security Question</span>
 
                                                             <span class="label danger" id="basic-addon1">Question</span>
@@ -84,7 +118,7 @@
                                                             </div>
                                                             <span class="label danger" id="basic-addon1"> </span>
                                                             <button type="submit" class="btn btn-blue text-center">Unlock</button>
-                                                        </form>
+                                                        }
                                                     </div>
                                                 </li>
                                             }

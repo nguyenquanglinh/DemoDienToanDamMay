@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 
 namespace DemoDienToanDamMay.MoreOptions
 {
@@ -14,7 +15,34 @@ namespace DemoDienToanDamMay.MoreOptions
                 Directory.CreateDirectory(FolderPath);
                 return true;
             }
-            catch (Exception ex)
+            catch
+            {
+                return false;
+            }
+        }
+        public static string GetPathImg(string email, string folderName,string fileName)
+        {
+            var FolderPath = $@"{path}/{"Data"}/{email}/{folderName}/{"img"}/{fileName}";
+            try
+            {
+                Directory.CreateDirectory(FolderPath);
+                return FolderPath;
+            }
+            catch
+            {
+                return FolderPath;
+            }
+        }
+        public static bool WirteFile(string path, string text)
+        {
+            try
+            {
+                File.WriteAllBytes(path, Encoding.ASCII.GetBytes(text));
+                //var x = File.ReadAllBytes(path);
+                //text = Encoding.ASCII.GetString(x);
+                return true;
+            }
+            catch
             {
                 return false;
             }

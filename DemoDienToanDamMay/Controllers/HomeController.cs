@@ -1,5 +1,6 @@
 ﻿using DemoDienToanDamMay.Enity;
 using DemoDienToanDamMay.MoreOptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -17,7 +18,7 @@ namespace DemoDienToanDamMay.Controllers
             ViewBag.ERR = err;
             ViewBag.Folders = db.FolderByUsers.ToList().Where(i => i.Email.Contains(Session["email"].ToString())).ToList();
             if (Session["folderName"] != null)
-                ViewBag.Files = db.FileImgs.ToList().Where(i => i.IdFolder.ToString().Contains(Session["folderName"].ToString()));
+                ViewBag.Files = db.FileImgs.ToList().Where(i => i.FolderName.Contains(Session["folderName"].ToString()));
             return View();
         }
 
@@ -41,10 +42,9 @@ namespace DemoDienToanDamMay.Controllers
         [HttpPost]
         public ActionResult Unlock(string question, string answer, string folderName)
         {
-            var foder = db.FolderByUsers.ToList().Where(i => i.Email.Contains(Session["email"].ToString()) && i.Question.Contains(question) && i.Answer.Contains(answer) && i.FolderName.Contains(folderName)).FirstOrDefault();
-            if (foder != null)
+            if (db.FolderByUsers.ToList().Where(i => i.Email.Contains(Session["email"].ToString()) && i.Question.Contains(question) && i.Answer.Contains(answer) && i.FolderName.Contains(folderName)).FirstOrDefault() != null)
             {
-                Session["folderName"] = foder.id;
+                Session["folderName"] = folderName;
                 return Redirect($"index?err=Unlock folder {folderName}");
             }
             return Redirect("Index?err=answer incorrect");
@@ -62,12 +62,44 @@ namespace DemoDienToanDamMay.Controllers
             }
         }
         [HttpPost]
-        public ActionResult UploadFile(HttpPostedFileBase file1)
+        public ActionResult UploadFile(IEnumerable<HttpPostedFileBase> file1)
         {
-            var x = Request.Files.Count;
-            if (Session["code"] == null)
-                return RedirectToAction("Login");
-            return View();
+            try
+            {
+                foreach (var item in file1)
+                {
+                    var path = FileFolder.GetPathImg(Session["email"].ToString(), Session["folderName"].ToString(), item.FileName);
+                    var filePathImg = $"{path}/{item.FileName}";
+                    var filePathKey = filePathImg + ".key";
+                    var filePathEnc = filePathImg + ".enc";
+
+
+                    var key = ED.GeneraKey(Session["email"].ToString() + Session["folderName"].ToString());
+                    var entry = ED.EncryptString(filePathImg, key);
+
+                    FileFolder.WirteFile(filePathKey, key);
+                    FileFolder.WirteFile(filePathEnc, entry);
+
+                    if (db.FileImgs.ToList().Where(i => i.FileName.Contains(item.FileName)).FirstOrDefault() == null)
+                    {
+                        item.SaveAs(filePathImg);
+                        db.FileImgs.Add(new FileImg()
+                        {
+                            KeyImg = key,
+                            ValueImg = filePathEnc,
+                            FileName = item.FileName,
+                            FolderName= Session["folderName"].ToString()
+                        });
+                    }
+                }
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            catch(Exception ex)
+            {
+                return RedirectToAction("Index?err=upload file error", "File");
+            }
+
         }
         public ActionResult Login(string err = null)
         {

@@ -1,4 +1,7 @@
+using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
+using System.Linq;
 
 namespace DemoDienToanDamMay.Enity
 {
@@ -15,17 +18,10 @@ namespace DemoDienToanDamMay.Enity
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<FolderByUser>()
-                .HasMany(e => e.FileImgs)
-                .WithRequired(e => e.FolderByUser)
-                .HasForeignKey(e => e.IdFolder)
-                .WillCascadeOnDelete(false);
-
             modelBuilder.Entity<LoginEmail>()
                 .HasMany(e => e.FolderByUsers)
                 .WithRequired(e => e.LoginEmail)
                 .WillCascadeOnDelete(false);
-
         }
     }
 }

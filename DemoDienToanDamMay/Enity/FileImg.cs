@@ -1,13 +1,14 @@
 namespace DemoDienToanDamMay.Enity
 {
+    using System;
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    using System.Data.Entity.Spatial;
 
     [Table("FileImg")]
     public partial class FileImg
     {
-        public int id { get; set; }
-
         [Required]
         [StringLength(2000)]
         public string KeyImg { get; set; }
@@ -16,11 +17,12 @@ namespace DemoDienToanDamMay.Enity
         [StringLength(2000)]
         public string ValueImg { get; set; }
 
-        public int IdFolder { get; set; }
+        [Required]
+        [StringLength(50)]
+        public string FolderName { get; set; }
 
-        [StringLength(2000)]
+        [Key]
+        [StringLength(50)]
         public string FileName { get; set; }
-
-        public virtual FolderByUser FolderByUser { get; set; }
     }
 }
