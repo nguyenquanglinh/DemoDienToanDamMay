@@ -39,6 +39,7 @@ namespace DemoDienToanDamMay.Controllers
             }
             return Redirect("Index");
         }
+
         [HttpPost]
         public ActionResult Unlock(string question, string answer, string folderName)
         {
@@ -61,6 +62,40 @@ namespace DemoDienToanDamMay.Controllers
                 return RedirectToAction("Index");
             }
         }
+
+        [HttpPost]
+        public ActionResult Dowload(HttpPostedFileBase fileKey, HttpPostedFileBase fileEncryption, int code)
+        {
+            try
+            {
+                var c = db.LoginEmails.ToList().Where(i => i.Email.Contains(Session["email"].ToString())).FirstOrDefault().Code;
+                if (c == code)
+                {
+                    string key = FileFolder.ReadFile(fileKey);
+                    string encrypt = FileFolder.ReadFile(fileEncryption);
+                    string decrypt = ED.DecryptString(encrypt, key);
+                    var path = db.FileImgs.ToList().Where(i => i.KeyImg.Contains(key) && i.ValueImg.Contains(decrypt)).FirstOrDefault();
+                    if (path != null)
+                    {
+                        Session["pathImg"] = path.ValueImg;
+                        return RedirectToAction("Dowload", "File");
+                    }
+
+                }
+                else
+                {
+                    SendMail.Send(Session["email"].ToString(), code, false);
+                    return Redirect("Index?Err=Wrong activation code.We have sent a new code to your email");
+                }
+
+            }
+            catch
+            {
+
+            }
+            return Redirect("Index");
+        }
+
         [HttpPost]
         public ActionResult UploadFile(IEnumerable<HttpPostedFileBase> file1)
         {
@@ -86,27 +121,31 @@ namespace DemoDienToanDamMay.Controllers
                         db.FileImgs.Add(new FileImg()
                         {
                             KeyImg = key,
-                            ValueImg = filePathEnc,
+                            ValueImg = filePathImg,
                             FileName = item.FileName,
-                            FolderName= Session["folderName"].ToString()
+                            FolderName = Session["folderName"].ToString()
                         });
                     }
+                    Session["pathKey"] = filePathKey;
+                    Session["pathEnc"] = filePathEnc;
                 }
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Dowload", "File");
             }
-            catch(Exception ex)
+            catch
             {
                 return RedirectToAction("Index?err=upload file error", "File");
             }
 
         }
+
         public ActionResult Login(string err = null)
         {
             ViewBag.Title = "Login";
             ViewBag.ERR = err;
             return View();
         }
+
         [HttpPost]
         public ActionResult Login(string email, string password)
         {
@@ -122,12 +161,14 @@ namespace DemoDienToanDamMay.Controllers
                 return Redirect("Login?err=Login information is incorrect");
             }
         }
+
         public ActionResult Logup(string err = null)
         {
             ViewBag.Title = "Logup";
             ViewBag.ERR = err;
             return View();
         }
+
         [HttpPost]
         public ActionResult Logup(string email, string password)
         {
@@ -150,11 +191,6 @@ namespace DemoDienToanDamMay.Controllers
                 }
                 return Redirect("Logup?err=Unable to verify account");
             }
-        }
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-            return View();
         }
 
         public ActionResult Contact()

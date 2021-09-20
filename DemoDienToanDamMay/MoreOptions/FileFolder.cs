@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Web;
 
 namespace DemoDienToanDamMay.MoreOptions
 {
@@ -20,7 +21,7 @@ namespace DemoDienToanDamMay.MoreOptions
                 return false;
             }
         }
-        public static string GetPathImg(string email, string folderName,string fileName)
+        public static string GetPathImg(string email, string folderName, string fileName)
         {
             var FolderPath = $@"{path}/{"Data"}/{email}/{folderName}/{"img"}/{fileName}";
             try
@@ -46,6 +47,20 @@ namespace DemoDienToanDamMay.MoreOptions
             {
                 return false;
             }
+        }
+        public static string ReadFile(HttpPostedFileBase file)
+        {
+            try
+            {
+                BinaryReader b = new BinaryReader(file.InputStream);
+                byte[] binData = b.ReadBytes(file.ContentLength);
+                return Encoding.ASCII.GetString(binData);
+            }
+            catch
+            {
+                return "";
+            }
+            
         }
     }
 }

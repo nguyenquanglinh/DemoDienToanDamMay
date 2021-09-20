@@ -1,6 +1,4 @@
-﻿
-<html>
-<head>
+﻿<head>
     <!-- bootstrap 5.x or 4.x is supported. You can also use the bootstrap css 3.3.x versions -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" crossorigin="anonymous">
 
@@ -37,19 +35,35 @@
     <!-- optionally if you need translation for your language then include the locale file as mentioned below (replace LANG.js with your language locale) -->
     <script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-fileinput@5.2.2/js/locales/LANG.js"></script>
 </head>
-<body oncontextmenu="return false" class="snippet-body" style="background-color:gainsboro">
-    <div class="container-fluid px-1 px-md-5 px-lg-1 px-xl-5 py-5 mx-auto">
-        <div class="card card0 border-0">
-            <div class="row">
-                <div class="col-md-12">
-                    <label class="form-label text-danger" for="customFile">Upload file</label>
-                    <span class="text-danger">@ViewBag.ERR</span>
-                    <form action="Home/UploadFile" method="post" enctype="multipart/form-data">
-                        <input id="file1" name="file1" type="file" accept=".jpg,.gif,.png" multiple class="file" data-Browse-on-zone-click="true">
-                    </form>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-4">
+                    @if (@Session["pathKey"] != null)
+                    {
+                        <a href="url('@Session["pathKey"]" download>
+                            Download
+                        </a>
+                    }
+                </div>
+                <div class="col-md-4">
+                    @if (@Session["pathEnc"] != null)
+                    {
+                        <a href="url('@Session["pathEnc"]" download>
+                            Download
+                        </a>
+                    }
+                </div>
+                <div class="col-md-4">
+                    @if (@Session["pathImg"] != null)
+                    {
+                        <a href="url('@Session["pathImg"]" download>
+                            Download
+                        </a>
+                    }
                 </div>
             </div>
         </div>
     </div>
 </body>
-</html>

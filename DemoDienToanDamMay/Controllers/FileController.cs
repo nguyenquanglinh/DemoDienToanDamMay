@@ -16,5 +16,11 @@ namespace DemoDienToanDamMay.Controllers
             ViewBag.ERR = err;
             return View();
         }
+        public ActionResult Dowload()
+        {
+            if (Session["code"] == null)
+                return RedirectToAction("Login", "Home");
+            return View();
+        }
     }
 }
