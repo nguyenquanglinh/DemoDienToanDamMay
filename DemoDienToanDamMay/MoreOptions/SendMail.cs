@@ -5,8 +5,8 @@ namespace DemoDienToanDamMay.MoreOptions
 {
     public class SendMail
     {
-        private static string FromMailAddress = "laptopnql@gmail.com";
-        private static string pass = "Linhnguyen99x";
+        private static string FromMailAddress = "gmail@gmail.com";
+        private static string pass = "passwork";
         private static SmtpClient smtpClient = new SmtpClient("smtp.gmail.com", 587)
         {
             EnableSsl = true,
