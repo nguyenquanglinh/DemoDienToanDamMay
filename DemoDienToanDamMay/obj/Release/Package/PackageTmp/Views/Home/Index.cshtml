@@ -1,0 +1,185 @@
+﻿
+<html>
+<head>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Material Design Bootstrap -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/css/mdb.min.css" rel="stylesheet">
+    <!-- JQuery -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js">
+    </script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js">
+    </script>
+
+</head>
+
+<body oncontextmenu="return false" class="snippet-body" style="background-color:gainsboro">
+    <div class="container-fluid px-1 px-md-5 px-lg-1 px-xl-5 py-5 mx-auto">
+        <div class="card card0 border-0">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <button id="upload" name="upload" onclick="uploadClick()" class="text-center">Upload</button>
+                        <script>
+                            function uploadClick() {
+                                var x = document.getElementById("formUpload");
+                                if (x.style.display === "none") {
+                                    x.style.display = "block";
+                                } else {
+                                    x.style.display = "none";
+                                }
+                            }
+
+                        </script>
+                        <div class="treeview-colorful w-20 border border-secondary mx-4 my-4" id="formUpload">
+                            <h6 class="pt-3 pl-3">@Session["email"]</h6>
+                            <h5>@ViewBag.ERR</h5>
+                            <hr>
+                            <ul class="treeview-colorful-list mb-3">
+                                @foreach (var item in ViewBag.Folders)
+                                {
+                                    <li class="treeview-colorful-items">
+                                        <a class="treeview-colorful-items-header">
+                                            <i class="fas fa-plus-circle"></i>
+                                            <span><i class=" fa-envelope-open ic-w mx-1"></i>@item.FolderName</span>
+                                        </a>
+                                        <ul class="nested">
+                                            @if (Session["folderName"] != null && Session["folderName"].ToString() == item.FolderName.ToString())
+                                            {
+                                                foreach (var file in @ViewBag.Files)
+                                                {
+                                                    <li class="treeview-colorful-items">
+                                                        <a class="treeview-colorful-items-header">
+                                                            <i class="fas fa-plus-circle"></i>
+                                                            <span><i class=" fa-envelope-open ic-w mx-1">@file.FileName</i></span>
+                                                        </a>
+                                                        <ul class="nested">
+                                                            <li>
+                                                                <span><i class=" fa-envelope-open ic-w mx-1"></i>@file.FileName</span>
+                                                                <div class="input-group mb-3">
+                                                                    @using (Html.BeginForm("Dowload", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                                                    {
+                                                                        @*<span class="label danger" id="basic-addon1">Security Question</span>
+
+                                                                        <span class="label danger" id="basic-addon1">Question</span>
+                                                                        <div class="input-group-prepend">
+                                                                            <input id="question" readonly value="@item.Question" name="question" type="text" class="form-control" placeholder="Question" aria-label="Question" aria-describedby="basic-addon1">
+                                                                        </div>
+                                                                        <span class="label danger" id="basic-addon1">Answer</span>
+                                                                        <div class="input-group-prepend">
+                                                                            <input id="answer" name="answer" type="text" class="form-control" placeholder="Answer" aria-label="Answer" aria-describedby="basic-addon1">
+                                                                        </div>
+                                                                        <div class="input-group-prepend" hidden>
+                                                                            <input id="folderName" name="folderName" readonly value="@item.FolderName" type="text" class="form-control" placeholder="Folder name" aria-label="Folder name" aria-describedby="basic-addon1">
+                                                                        </div>*@
+                                                                        <span class="label danger" id="basic-addon1">file key</span>
+                                                                        <div class="input-group-prepend">
+                                                                            <input id="fileKey" name="fileKey" type="file" accept=".key" class="form-control" placeholder="File key" aria-label="File key" aria-describedby="basic-addon1">
+                                                                        </div>
+                                                                        <span class="label danger" id="basic-addon1">file encryption</span>
+                                                                        <div class="input-group-prepend">
+                                                                            <input id="fileEncryption" name="fileEncryption" type="file" accept=".enc" class="form-control" placeholder="File encryption" aria-label="File encryption" aria-describedby="basic-addon1">
+                                                                        </div>
+                                                                        <span class="label danger" id="basic-addon1">Code</span>
+                                                                        <div class="input-group-prepend">
+                                                                            <input id="code" name="code" type="text"  class="form-control" placeholder="code" aria-label="code" aria-describedby="basic-addon1">
+                                                                        </div>
+                                                                        <span class="label danger" id="basic-addon1"> </span>
+                                                                        <button type="submit" class="btn btn-blue text-center">Unlock</button>
+                                                                    }
+                                                                </div>
+                                                            </li>
+
+                                                        </ul>
+                                                    </li>
+
+
+                                                }
+                                                <li>@Html.ActionLink("Add file", "", "File")</li>
+                                            }
+                                            else
+                                            {
+                                                <li>
+                                                    <div class="input-group mb-3">
+                                                        @using (Html.BeginForm("Unlock", "Home", FormMethod.Post))
+                                                        {
+                                                            <span class="label danger" id="basic-addon1">Security Question</span>
+
+                                                            <span class="label danger" id="basic-addon1">Question</span>
+                                                            <div class="input-group-prepend">
+                                                                <input id="questionu" readonly value="@item.Question" name="question" type="text" class="form-control" placeholder="Question" aria-label="Question" aria-describedby="basic-addon1">
+                                                            </div>
+                                                            <span class="label danger" id="basic-addon1">Answer</span>
+                                                            <div class="input-group-prepend">
+                                                                <input id="answeru" name="answer" type="text" class="form-control" placeholder="Answer" aria-label="Answer" aria-describedby="basic-addon1">
+                                                            </div>
+                                                            <div class="input-group-prepend" hidden>
+                                                                <input id="folderNameu" name="folderName" readonly value="@item.FolderName" type="text" class="form-control" placeholder="Folder name" aria-label="Folder name" aria-describedby="basic-addon1">
+                                                            </div>
+                                                            <span class="label danger" id="basic-addon1"> </span>
+                                                            <button type="submit" class="btn btn-blue text-center">Unlock</button>
+                                                        }
+                                                    </div>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+                                <li class="treeview-colorful-items">
+                                    <a class="treeview-colorful-items-header">
+                                        <i class="fas fa-plus-circle"></i>
+                                        <span><i class=" fa-envelope-open ic-w mx-1"></i>New folder</span>
+                                    </a>
+                                    <ul class="nested">
+                                        <li>
+                                            <div class="input-group mb-3">
+                                                @using (Html.BeginForm("CreateFolder", "Home", FormMethod.Post))
+                                                {
+                                                    <span class="label danger" id="basic-addon1">Security Question</span>
+
+                                                    <span class="label danger" id="basic-addon1">Question</span>
+                                                    <div class="input-group-prepend">
+                                                        <input id="question" name="question" type="text" class="form-control" placeholder="Question" aria-label="Question" aria-describedby="basic-addon1">
+                                                    </div>
+
+                                                    <span class="label danger" id="basic-addon1">Answer</span>
+                                                    <div class="input-group-prepend">
+                                                        <input id="answer" name="answer" type="text" class="form-control" placeholder="Answer" aria-label="Answer" aria-describedby="basic-addon1">
+                                                    </div>
+
+                                                    <span class="label danger" id="basic-addon1">Folder name</span>
+                                                    <div class="input-group-prepend">
+                                                        <input id="folderName" name="folderName" type="text" class="form-control" placeholder="Folder name" aria-label="Folder name" aria-describedby="basic-addon1">
+                                                    </div>
+                                                    <span class="label danger" id="basic-addon1"> </span>
+                                                    <button type="submit" class="btn btn-blue text-center">Add</button>
+                                                }
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <script>
+                            $(document).ready(function () {
+                                $('.treeview-colorful').mdbTreeview();
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

@@ -42,25 +42,19 @@
                 <div class="col-md-4">
                     @if (@Session["pathKey"] != null)
                     {
-                        <a href="url('@Session["pathKey"]" download>
-                            Download
-                        </a>
+                        <li>@Html.ActionLink("Download file key", "DownloadKey", "File")</li>
                     }
                 </div>
                 <div class="col-md-4">
                     @if (@Session["pathEnc"] != null)
                     {
-                        <a href="url('@Session["pathEnc"]" download>
-                            Download
-                        </a>
+                        <li>@Html.ActionLink("Download file Encrypt", "DownloadEnc", "File")</li>
                     }
                 </div>
                 <div class="col-md-4">
                     @if (@Session["pathImg"] != null)
                     {
-                        <a href="url('@Session["pathImg"]" download>
-                            Download
-                        </a>
+                        <li>@Html.ActionLink("Download file Image", "DownloadImg", "File")</li>
                     }
                 </div>
             </div>

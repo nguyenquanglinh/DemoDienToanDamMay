@@ -51,6 +51,11 @@ namespace DemoDienToanDamMay.Controllers
             return Redirect("Index?err=answer incorrect");
         }
 
+        public ActionResult Logout()
+        {
+            Session.Clear();
+            return RedirectToAction("Login");
+        }
         public ActionResult UploadFile()
         {
             if (Session["code"] == null)
@@ -104,11 +109,9 @@ namespace DemoDienToanDamMay.Controllers
                 foreach (var item in file1)
                 {
                     var path = FileFolder.GetPathImg(Session["email"].ToString(), Session["folderName"].ToString(), item.FileName);
-                    var filePathImg = $"{path}/{item.FileName}";
+                    var filePathImg = $"{path}\\{item.FileName}";
                     var filePathKey = filePathImg + ".key";
                     var filePathEnc = filePathImg + ".enc";
-
-
                     var key = ED.GeneraKey(Session["email"].ToString() + Session["folderName"].ToString());
                     var entry = ED.EncryptString(filePathImg, key);
 

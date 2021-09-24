@@ -23,10 +23,10 @@ namespace DemoDienToanDamMay.MoreOptions
         }
         public static string GetPathImg(string email, string folderName, string fileName)
         {
-            var FolderPath = $@"{path}/{"Data"}/{email}/{folderName}/{"img"}/{fileName}";
+            var FolderPath = $@"{path}\\{"Data"}\\{email}\\{folderName}\\{"img"}\\{fileName}";
             try
             {
-                Directory.CreateDirectory(FolderPath);
+               var x= Directory.CreateDirectory(FolderPath);
                 return FolderPath;
             }
             catch
