@@ -11,6 +11,17 @@ namespace DemoDienToanDamMay.Controllers
     public class HomeController : Controller
     {
         static Model1 db = new Model1();
+        private void UpdateHisoty(string history)
+        {
+            var x = (List<string>)Session["history"];
+            if (x == null)
+                Session["history"] = new List<string>() { history };
+            else
+            {
+                x.Add(history);
+                Session["history"] = x;
+            }
+        }
         public ActionResult Index(string err = null)
         {
             if (Session["code"] == null)
@@ -19,6 +30,7 @@ namespace DemoDienToanDamMay.Controllers
             ViewBag.Folders = db.FolderByUsers.ToList().Where(i => i.Email.Contains(Session["email"].ToString())).ToList();
             if (Session["folderName"] != null)
                 ViewBag.Files = db.FileImgs.ToList().Where(i => i.FolderName.Contains(Session["folderName"].ToString()));
+
             return View();
         }
 
@@ -36,6 +48,7 @@ namespace DemoDienToanDamMay.Controllers
 
                 });
                 db.SaveChanges();
+                UpdateHisoty($"CreateFolder {folderName}");
             }
             return Redirect("Index");
         }
@@ -46,8 +59,10 @@ namespace DemoDienToanDamMay.Controllers
             if (db.FolderByUsers.ToList().Where(i => i.Email.Contains(Session["email"].ToString()) && i.Question.Contains(question) && i.Answer.Contains(answer) && i.FolderName.Contains(folderName)).FirstOrDefault() != null)
             {
                 Session["folderName"] = folderName;
+                UpdateHisoty($"Unlock {folderName} success");
                 return Redirect($"index?err=Unlock folder {folderName}");
             }
+            UpdateHisoty($"Unlock {folderName} false");
             return Redirect("Index?err=answer incorrect");
         }
 
@@ -85,7 +100,6 @@ namespace DemoDienToanDamMay.Controllers
                         Session["pathImg"] = path.ValueImg;
                         return RedirectToAction("Dowload", "File");
                     }
-
                 }
                 else
                 {
@@ -96,7 +110,6 @@ namespace DemoDienToanDamMay.Controllers
             }
             catch
             {
-
             }
             return Redirect("Index");
         }
@@ -117,7 +130,7 @@ namespace DemoDienToanDamMay.Controllers
 
                     FileFolder.WirteFile(filePathKey, key);
                     FileFolder.WirteFile(filePathEnc, entry);
-
+                    UpdateHisoty($"UploadFile {item.FileName} success");
                     if (db.FileImgs.ToList().Where(i => i.FileName.Contains(item.FileName)).FirstOrDefault() == null)
                     {
                         item.SaveAs(filePathImg);
@@ -137,7 +150,7 @@ namespace DemoDienToanDamMay.Controllers
             }
             catch
             {
-                return RedirectToAction("Index?err=upload file error", "File");
+                return RedirectToAction("Index", "File");
             }
 
         }
@@ -157,6 +170,7 @@ namespace DemoDienToanDamMay.Controllers
             {
                 Session["code"] = user.Code;
                 Session["email"] = email;
+                UpdateHisoty($"Login by {Session["email"].ToString()}");
                 return RedirectToAction("Index");
             }
             else
@@ -167,7 +181,7 @@ namespace DemoDienToanDamMay.Controllers
 
         public ActionResult Logup(string err = null)
         {
-            ViewBag.Title = "Logup";
+            ViewBag.Title = "Register";
             ViewBag.ERR = err;
             return View();
         }

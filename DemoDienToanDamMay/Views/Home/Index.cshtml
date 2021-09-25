@@ -78,7 +78,7 @@
                                                                         </div>
                                                                         <span class="label danger" id="basic-addon1">Code</span>
                                                                         <div class="input-group-prepend">
-                                                                            <input id="code" name="code" type="text"  class="form-control" placeholder="code" aria-label="code" aria-describedby="basic-addon1">
+                                                                            <input id="code" name="code" type="text" class="form-control" placeholder="code" aria-label="code" aria-describedby="basic-addon1">
                                                                         </div>
                                                                         <span class="label danger" id="basic-addon1"> </span>
                                                                         <button type="submit" class="btn btn-blue text-center">Unlock</button>
@@ -154,6 +154,38 @@
                                         </li>
                                     </ul>
                                 </li>
+                            </ul>
+                        </div>
+                        <script>
+                            $(document).ready(function () {
+                                $('.treeview-colorful').mdbTreeview();
+                            });
+                        </script>
+                    </div>
+                    <div class="col-md-6">
+                        <button id="history" name="history" onclick="historyClick()" class="text-center">history</button>
+                        <script>
+                            function historyClick() {
+                                var x = document.getElementById("formHistory");
+                                if (x.style.display === "none") {
+                                    x.style.display = "block";
+                                } else {
+                                    x.style.display = "none";
+                                }
+                            }
+                        </script>
+                        <div class="treeview-colorful w-20 border border-secondary mx-4 my-4" id="formHistory">
+                            <h6 class="pt-3 pl-3">History</h6>
+                            <hr>
+                            <ul class="treeview-colorful-list mb-3">
+                                @foreach (var item in (List<string>)Session["history"])
+                                {
+                                    <li class="treeview-colorful-items">
+                                        <a class="treeview-colorful-items-header">
+                                            <span><i class=" fa-envelope-open ic-w mx-1"></i>@item</span>
+                                        </a>
+                                    </li>
+                                }
                             </ul>
                         </div>
                         <script>

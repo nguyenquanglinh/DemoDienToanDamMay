@@ -8,6 +8,18 @@ namespace DemoDienToanDamMay.Controllers
 {
     public class FileController : Controller
     {
+        private void UpdateHisoty(string history)
+        {
+            var x = (List<string>)Session["history"];
+            if (x == null)
+                Session["history"] = new List<string>() { history };
+            else
+            {
+
+                x.Add(history);
+                Session["history"] = x;
+            }
+        }
         // GET: File
         public ActionResult Index(string err = null)
         {
@@ -22,9 +34,9 @@ namespace DemoDienToanDamMay.Controllers
                 return RedirectToAction("Login", "Home");
             return View();
         }
-        private ActionResult Download(string file,string fileName)
+        private ActionResult Download(string file)
         {
-
+            var x = file.Split('\\');
             if (!System.IO.File.Exists(file))
             {
                 return HttpNotFound();
@@ -33,27 +45,28 @@ namespace DemoDienToanDamMay.Controllers
             var fileBytes = System.IO.File.ReadAllBytes(file);
             var response = new FileContentResult(fileBytes, "application/octet-stream")
             {
-                FileDownloadName = fileName,
+                FileDownloadName = x[x.Count() - 1],
             };
+            UpdateHisoty($"Download {x[x.Count() - 1]}");
             return response;
         }
         public ActionResult DownloadKey()
         {
             if (Session["code"] == null)
                 return RedirectToAction("Login", "Home");
-            return Download(Session["pathKey"].ToString(),"file.key");
+            return Download(Session["pathKey"].ToString());
         }
         public ActionResult DownloadEnc()
         {
             if (Session["code"] == null)
                 return RedirectToAction("Login", "Home");
-            return Download(Session["pathEnc"].ToString(), "file.enc");
+            return Download(Session["pathEnc"].ToString());
         }
         public ActionResult DownloadImg()
         {
             if (Session["code"] == null)
                 return RedirectToAction("Login", "Home");
-            return Download(Session["pathImg"].ToString(),"file.img");
+            return Download(Session["pathImg"].ToString());
         }
 
     }
