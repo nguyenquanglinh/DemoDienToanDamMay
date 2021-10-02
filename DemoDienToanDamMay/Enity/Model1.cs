@@ -19,9 +19,9 @@ namespace DemoDienToanDamMay.Enity
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<LoginEmail>()
-                .HasMany(e => e.FolderByUsers)
-                .WithRequired(e => e.LoginEmail)
-                .WillCascadeOnDelete(false);
+                .Property(e => e.Code)
+                .IsFixedLength()
+                .IsUnicode(false);
         }
     }
 }

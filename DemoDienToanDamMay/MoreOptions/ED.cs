@@ -15,6 +15,10 @@ namespace DemoDienToanDamMay.MoreOptions
         {
             return new string(Enumerable.Repeat(key, 32).Select(s => s[random.Next(s.Length)]).ToArray());
         }
+        public static string GeneraCode(string key="1234567890")
+        {
+            return new string(Enumerable.Repeat(key, 8).Select(s => s[random.Next(s.Length)]).ToArray());
+        }
         public static string EncryptString(string plainText, string key)
         {
             byte[] iv = new byte[16];

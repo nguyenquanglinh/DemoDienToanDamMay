@@ -66,7 +66,9 @@ namespace DemoDienToanDamMay.Controllers
         {
             if (Session["code"] == null)
                 return RedirectToAction("Login", "Home");
-            return Download(Session["pathImg"].ToString());
+            var x = Session["pathImg"].ToString();
+            Session["pathImg"] = null;
+            return Download(x);
         }
 
     }

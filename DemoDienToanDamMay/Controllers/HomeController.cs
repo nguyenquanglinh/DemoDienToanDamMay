@@ -22,6 +22,24 @@ namespace DemoDienToanDamMay.Controllers
                 Session["history"] = x;
             }
         }
+        public ActionResult RemoveFolder()
+        {
+            if (Session["code"] == null)
+                return RedirectToAction("Login");
+            if (Session["folderName"] != null)
+            {
+                var f = db.FolderByUsers.ToList().Where(i => i.FolderName == Session["folderName"].ToString()).FirstOrDefault();
+                var x = db.FileImgs.ToList().Where(i => i.FolderName == f.FolderName).ToList();
+                foreach (var item in x)
+                {
+                    db.FileImgs.Remove(item);
+                }
+                db.FolderByUsers.Remove(f);
+                Session["folderName"] = null;
+                db.SaveChanges();
+            }
+            return Redirect("Index");
+        }
         public ActionResult Index(string err = null)
         {
             if (Session["code"] == null)
@@ -84,7 +102,7 @@ namespace DemoDienToanDamMay.Controllers
         }
 
         [HttpPost]
-        public ActionResult Dowload(HttpPostedFileBase fileKey, HttpPostedFileBase fileEncryption, int code)
+        public ActionResult Dowload(HttpPostedFileBase fileKey, HttpPostedFileBase fileEncryption, string code)
         {
             try
             {
@@ -103,7 +121,7 @@ namespace DemoDienToanDamMay.Controllers
                 }
                 else
                 {
-                    SendMail.Send(Session["email"].ToString(), code, false);
+                    SendMail.Send(Session["email"].ToString(), c, false);
                     return Redirect("Index?Err=Wrong activation code.We have sent a new code to your email");
                 }
 
@@ -123,15 +141,15 @@ namespace DemoDienToanDamMay.Controllers
                 {
                     var path = FileFolder.GetPathImg(Session["email"].ToString(), Session["folderName"].ToString(), item.FileName);
                     var filePathImg = $"{path}\\{item.FileName}";
-                    var filePathKey = filePathImg + ".key";
-                    var filePathEnc = filePathImg + ".enc";
+                    var filePathKey = path + ".key";
+                    var filePathEnc = path + ".enc";
                     var key = ED.GeneraKey(Session["email"].ToString() + Session["folderName"].ToString());
                     var entry = ED.EncryptString(filePathImg, key);
 
                     FileFolder.WirteFile(filePathKey, key);
                     FileFolder.WirteFile(filePathEnc, entry);
                     UpdateHisoty($"UploadFile {item.FileName} success");
-                    if (db.FileImgs.ToList().Where(i => i.FileName.Contains(item.FileName)).FirstOrDefault() == null)
+                    if (db.FileImgs.ToList().Where(i => i.FileName.Contains(item.FileName) && i.FolderName.Contains(Session["folderName"].ToString())).FirstOrDefault() == null)
                     {
                         item.SaveAs(filePathImg);
                         db.FileImgs.Add(new FileImg()
@@ -148,11 +166,10 @@ namespace DemoDienToanDamMay.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Dowload", "File");
             }
-            catch
+            catch(Exception ex)
             {
                 return RedirectToAction("Index", "File");
             }
-
         }
 
         public ActionResult Login(string err = null)
@@ -195,13 +212,14 @@ namespace DemoDienToanDamMay.Controllers
             }
             else
             {
-                if (SendMail.Send(email, db.LoginEmails.Count()))
+                var code = ED.GeneraCode();
+                if (SendMail.Send(email, code))
                 {
                     db.LoginEmails.Add(new LoginEmail()
                     {
                         Email = email,
                         PassWords = password,
-                        Code = db.LoginEmails.Count()
+                        Code = code
                     });
                     db.SaveChanges();
                     return RedirectToAction("Login");

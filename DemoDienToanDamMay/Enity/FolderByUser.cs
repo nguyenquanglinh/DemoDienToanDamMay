@@ -24,7 +24,5 @@ namespace DemoDienToanDamMay.Enity
         [Required]
         [StringLength(50)]
         public string Answer { get; set; }
-
-        public virtual LoginEmail LoginEmail { get; set; }
     }
 }

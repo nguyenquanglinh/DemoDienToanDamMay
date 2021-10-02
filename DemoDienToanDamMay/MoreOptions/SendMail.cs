@@ -7,7 +7,7 @@ namespace DemoDienToanDamMay.MoreOptions
     {
         private static string FromMailAddress = "loccigo@gmail.com";
         private static string pass = "Loc1504*";
-        public static bool Send(string ToMailAddress, int code, bool Iscreate=true)
+        public static bool Send(string ToMailAddress, string code, bool Iscreate=true)
         {
             try
             {
